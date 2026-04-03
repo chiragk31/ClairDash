@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClairDash - Complaint Detail #CD-9275</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-dim": "#f17799",
+                        "error-dim": "#d73357",
+                        "primary-dim": "#8a4cfc",
+                        "on-secondary": "#505066",
+                        "on-tertiary": "#6a0a31",
+                        "surface": "#0d0d18",
+                        "on-secondary-fixed": "#3e3d53",
+                        "on-error-container": "#ffb2b9",
+                        "surface-container-low": "#12121e",
+                        "inverse-surface": "#fcf8ff",
+                        "surface-container-lowest": "#000000",
+                        "on-primary-fixed": "#000000",
+                        "tertiary-container": "#fe81a4",
+                        "on-tertiary-fixed": "#380016",
+                        "tertiary-fixed": "#ff8eac",
+                        "outline": "#757482",
+                        "background": "#0d0d18",
+                        "surface-container": "#181826",
+                        "inverse-on-surface": "#555461",
+                        "secondary-fixed-dim": "#d4d2ed",
+                        "on-tertiary-fixed-variant": "#711036",
+                        "surface-bright": "#2b2a3c",
+                        "on-primary-container": "#2e006c",
+                        "secondary-container": "#45455b",
+                        "inverse-primary": "#742fe5",
+                        "on-secondary-container": "#d0cee9",
+                        "secondary": "#e2e0fc",
+                        "primary-container": "#b28cff",
+                        "outline-variant": "#474754",
+                        "on-primary": "#3c0089",
+                        "on-background": "#e9e6f7",
+                        "on-error": "#490013",
+                        "primary-fixed": "#b28cff",
+                        "tertiary-fixed-dim": "#f77c9e",
+                        "secondary-dim": "#d4d2ed",
+                        "primary-fixed-dim": "#a67aff",
+                        "tertiary": "#ff97b2",
+                        "primary": "#bd9dff",
+                        "error-container": "#a70138",
+                        "on-surface-variant": "#aba9b9",
+                        "surface-tint": "#bd9dff",
+                        "error": "#ff6e84",
+                        "on-tertiary-container": "#5a0027",
+                        "on-secondary-fixed-variant": "#5a5971",
+                        "surface-dim": "#0d0d18",
+                        "surface-container-highest": "#242434",
+                        "secondary-fixed": "#e2e0fc",
+                        "on-primary-fixed-variant": "#390083",
+                        "surface-variant": "#242434",
+                        "surface-container-high": "#1e1e2d",
+                        "on-surface": "#e9e6f7"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0d0d18; }
+        ::-webkit-scrollbar-thumb { background: #242434; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #2b2a3c; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/30">
+<!-- Sidebar Navigation -->
+<aside class="h-screen w-64 fixed left-0 top-0 overflow-y-auto bg-[#0d0d18] dark:bg-[#0d0d18] flex flex-col py-8 z-50 shadow-2xl shadow-black/50">
+<div class="px-6 mb-8">
+<h1 class="text-xl font-bold text-[#e9e6f7]">ClairDash</h1>
+<p class="text-on-surface-variant text-xs font-medium uppercase tracking-widest mt-1">Customer Ops</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="group flex items-center space-x-3 px-6 py-4 text-[#aba9b9] hover:text-[#e9e6f7] hover:bg-[#181826] transition-all duration-300 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="group flex items-center space-x-3 px-6 py-4 text-violet-400 border-r-2 border-violet-500 bg-gradient-to-r from-violet-500/10 to-transparent transition-all duration-300 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-medium text-sm">Complaints</span>
+</a>
+<a class="group flex items-center space-x-3 px-6 py-4 text-[#aba9b9] hover:text-[#e9e6f7] hover:bg-[#181826] transition-all duration-300 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-medium text-sm">Analytics</span>
+</a>
+<a class="group flex items-center space-x-3 px-6 py-4 text-[#aba9b9] hover:text-[#e9e6f7] hover:bg-[#181826] transition-all duration-300 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">priority_high</span>
+<span class="font-medium text-sm">Escalations</span>
+</a>
+<a class="group flex items-center space-x-3 px-6 py-4 text-[#aba9b9] hover:text-[#e9e6f7] hover:bg-[#181826] transition-all duration-300 cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium text-sm">Settings</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<div class="flex items-center space-x-3 p-3 bg-surface-container-low rounded-xl">
+<img alt="User Avatar" class="w-8 h-8 rounded-full" data-alt="close-up portrait of a professional woman with glasses in a tech office setting, soft studio lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBItmLuodeahVSmmCruILCwpUGOqh5nifptFxdBHSb9deC4Y-fACMuLkKwVKCh4J6_UdCUMlmeG-VOmdnMBCAz_YQrTDRYNjxMe1SRaDNWa-m2HCJdTtUHb8Mu5pE0Z-xQUvDMphcjq5BPTFzTt4l2uKQ_Ca29qNATrlwTURtcEcYTsfr0pw-rr_qmWQ9yoXUg_6ixCKKcYKtvJylvajlkfvSSFru7QeRspIgQ7XxR81aPbGEVwoxH43OX8yfp_kHY8uXtatrg_xm_N"/>
+<div class="flex-1 min-w-0">
+<p class="text-sm font-semibold truncate text-on-surface">Alex Rivera</p>
+<p class="text-xs text-on-surface-variant truncate">Lead Agent</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Top AppBar -->
+<header class="w-full sticky top-0 z-40 bg-[#0d0d18] dark:bg-[#0d0d18] flex justify-between items-center px-6 h-16 ml-64 w-[calc(100%-16rem)]">
+<div class="flex items-center space-x-4 flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-1 focus:ring-primary-dim text-on-surface" placeholder="Search complaints, IDs, or users..." type="text"/>
+</div>
+</div>
+<div class="flex items-center space-x-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant/30 mx-2"></div>
+<div class="flex items-center space-x-2">
+<span class="text-xs font-bold text-primary px-2 py-1 bg-primary/10 rounded uppercase tracking-tighter">Live Support</span>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="ml-64 p-8">
+<!-- Breadcrumb / Back Navigation -->
+<div class="mb-6">
+<button class="flex items-center text-on-surface-variant hover:text-primary transition-colors text-sm font-medium">
+<span class="material-symbols-outlined mr-2 text-lg">arrow_back</span>
+                Back to Inbox
+            </button>
+</div>
+<div class="grid grid-cols-12 gap-8">
+<!-- Left Column (60%) -->
+<div class="col-span-12 lg:col-span-7 space-y-8">
+<!-- Header Card -->
+<section class="bg-surface-container p-6 rounded-xl shadow-lg border border-outline-variant/5">
+<div class="flex justify-between items-start mb-4">
+<div>
+<div class="flex items-center space-x-3 mb-2">
+<div class="bg-primary/20 p-2 rounded-lg">
+<span class="material-symbols-outlined text-primary">mail</span>
+</div>
+<span class="text-on-surface-variant text-sm font-mono">#CD-9275</span>
+</div>
+<h2 class="text-2xl font-bold tracking-tight text-on-surface">Duplicate billing charges on monthly invoice</h2>
+</div>
+<div class="text-right">
+<p class="text-on-surface-variant text-sm">Dec 14, 10:24 AM</p>
+</div>
+</div>
+<div class="flex items-center space-x-4 pt-4 border-t border-outline-variant/10">
+<div class="flex items-center space-x-2">
+<div class="w-8 h-8 rounded-full bg-secondary-container flex items-center justify-center text-xs font-bold text-on-secondary-container">MR</div>
+<div>
+<p class="text-sm font-semibold text-on-surface leading-none">Mike Ross</p>
+<p class="text-xs text-on-surface-variant">mike.ross@pearson.com</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Original Message -->
+<section class="bg-surface-container-low p-6 rounded-xl border border-outline-variant/10 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary/40"></div>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant">Original Message</h3>
+</div>
+<p class="text-on-surface leading-relaxed italic">
+                        "Hi team, I noticed that I was charged twice for my 'Pro Plan' subscription on this month's invoice. One charge was on the 1st and another today on the 14th. This seems like a system error as my dashboard only shows one active subscription. Can you please look into this and issue a refund for the duplicate transaction as soon as possible? Thanks, Mike."
+                    </p>
+</section>
+<!-- Communication History -->
+<section class="space-y-6">
+<h3 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant">Communication History</h3>
+<div class="space-y-6">
+<!-- Customer Message -->
+<div class="flex justify-start">
+<div class="max-w-[80%] bg-surface-container p-4 rounded-2xl rounded-tl-none border border-outline-variant/5">
+<p class="text-sm text-on-surface leading-relaxed">Is there any update on the refund? I haven't seen the credit in my account yet.</p>
+<div class="flex justify-between items-center mt-2">
+<span class="text-[10px] text-on-surface-variant">Dec 15, 09:15 AM</span>
+<span class="material-symbols-outlined text-xs text-primary/60" style="font-variation-settings: 'FILL' 1;">done_all</span>
+</div>
+</div>
+</div>
+<!-- Agent Message -->
+<div class="flex justify-end">
+<div class="max-w-[80%] bg-primary-dim/10 p-4 rounded-2xl rounded-tr-none border border-primary/20">
+<p class="text-sm text-on-surface leading-relaxed">Hi Mike, I'm currently verifying the transaction IDs with our payment provider. It looks like a webhook latency issue. I'll have an update for you shortly.</p>
+<div class="flex justify-between items-center mt-2">
+<span class="text-[10px] text-on-surface-variant">Dec 15, 11:30 AM</span>
+<div class="flex items-center space-x-1">
+<img alt="Agent" class="w-3 h-3 rounded-full" data-alt="professional support agent headshot circular avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB37WCLFGtlbJkXdI7CE4zyiRqBm4zWKz_d4laOPxkl72579ONm41d6YQn6t_2JEiDOWqaNvtN454_OzkoVCxW86RtI9cpE5a-PDDZZlluBXR6P5YW9xBsxCSnYqRQTX0jVkfwoAEDTHpLZUwSvrPBG6byRi_VS6YVwA70W_SqazLpghSew7oeKI_XWT26T_K2oKrArGRLtA8oP0zMGG-K67O6NSoPKvUXI8WkcW1r1cZGKmdyIrZUJDlWx-hOUFix-_V1b8ptYWWwN"/>
+<span class="text-[10px] text-primary">Alex R.</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Draft Response -->
+<section class="bg-surface-bright/40 backdrop-blur-md p-6 rounded-2xl border border-primary/20 shadow-2xl shadow-primary/5">
+<div class="flex items-center space-x-2 mb-4">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+<h3 class="text-sm font-bold uppercase tracking-widest text-primary">AI Draft Response</h3>
+</div>
+<div class="bg-surface-container-low rounded-xl p-1 mb-4 border border-outline-variant/10">
+<textarea class="w-full bg-transparent border-none text-on-surface text-sm focus:ring-0 p-3 min-h-[120px] resize-none" placeholder="Drafting response...">Hi Mike, I'm sorry for the billing error you experienced. I've successfully verified the duplicate charge and have initiated a refund of $49.00 to your original payment method. You should see this reflect in your bank statement within 3-5 business days. Apologies for the inconvenience.</textarea>
+</div>
+<div class="flex items-center justify-between">
+<button class="px-4 py-2 text-xs font-bold text-on-surface-variant border border-outline-variant/30 rounded-lg hover:bg-surface-container transition-colors flex items-center">
+<span class="material-symbols-outlined text-sm mr-2">refresh</span>
+                            Regenerate Draft
+                        </button>
+<button class="px-6 py-2.5 bg-gradient-to-br from-primary-dim to-primary text-on-primary font-bold rounded-lg shadow-lg shadow-primary/20 active:scale-95 transition-all text-sm flex items-center">
+                            Edit &amp; Send
+                            <span class="material-symbols-outlined text-sm ml-2">send</span>
+</button>
+</div>
+</section>
+</div>
+<!-- Right Column (40%) -->
+<div class="col-span-12 lg:col-span-5 space-y-6">
+<!-- AI Analysis Card -->
+<section class="bg-surface-container p-6 rounded-xl border border-outline-variant/10">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4">AI Intelligence</h3>
+<div class="grid grid-cols-3 gap-3 mb-6">
+<div class="bg-surface-container-high p-3 rounded-xl text-center border border-outline-variant/5">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold mb-1">Category</p>
+<span class="text-xs font-semibold text-primary">Billing</span>
+</div>
+<div class="bg-surface-container-high p-3 rounded-xl text-center border border-outline-variant/5">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold mb-1">Severity</p>
+<span class="text-xs font-semibold text-tertiary">High</span>
+</div>
+<div class="bg-surface-container-high p-3 rounded-xl text-center border border-outline-variant/5">
+<p class="text-[10px] text-on-surface-variant uppercase font-bold mb-1">Sentiment</p>
+<span class="text-xs font-semibold text-tertiary">Negative</span>
+</div>
+</div>
+<div class="space-y-3">
+<p class="text-xs font-bold text-on-surface-variant uppercase tracking-tighter">Key Issues</p>
+<ul class="space-y-2">
+<li class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-tertiary text-sm mt-0.5">error</span>
+<span class="text-sm text-on-surface">Duplicate charge error in billing cycle</span>
+</li>
+<li class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-primary text-sm mt-0.5">bolt</span>
+<span class="text-sm text-on-surface">Customer requesting immediate refund</span>
+</li>
+<li class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-primary text-sm mt-0.5">info</span>
+<span class="text-sm text-on-surface">Likely subscription logic synchronization failure</span>
+</li>
+</ul>
+</div>
+</section>
+<!-- SLA Tracker -->
+<section class="bg-surface-container p-6 rounded-xl border border-outline-variant/10">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">SLA Compliance</h3>
+<span class="text-[10px] bg-error-dim/20 text-error px-2 py-0.5 rounded-full font-bold">Priority Target</span>
+</div>
+<div class="flex items-center justify-around">
+<div class="relative flex items-center justify-center">
+<svg class="w-24 h-24 transform -rotate-90">
+<circle class="text-surface-container-high" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-width="8"></circle>
+<circle class="text-primary-dim transition-all duration-1000" cx="48" cy="48" fill="transparent" r="40" stroke="currentColor" stroke-dasharray="251.2" stroke-dashoffset="70.3" stroke-width="8"></circle>
+</svg>
+<span class="absolute text-lg font-bold text-on-surface">72%</span>
+</div>
+<div class="space-y-1">
+<p class="text-2xl font-black text-on-surface tracking-tighter">4h 12m</p>
+<p class="text-xs text-on-surface-variant">Until SLA breach</p>
+<p class="text-[10px] text-on-surface-variant font-mono mt-2">Deadline: Dec 15, 15:45</p>
+</div>
+</div>
+</section>
+<!-- Complaint Details -->
+<section class="bg-surface-container p-6 rounded-xl border border-outline-variant/10 space-y-5">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Settings &amp; Ownership</h3>
+<div class="space-y-4">
+<div>
+<label class="block text-[10px] font-bold text-on-surface-variant uppercase mb-1.5">Status</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg text-sm text-on-surface py-2 px-3 appearance-none focus:ring-1 focus:ring-primary">
+<option>Open</option>
+<option>Pending</option>
+<option>Resolved</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-sm pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<div>
+<label class="block text-[10px] font-bold text-on-surface-variant uppercase mb-1.5">Assigned To</label>
+<div class="relative">
+<select class="w-full bg-surface-container-low border border-outline-variant/20 rounded-lg text-sm text-on-surface py-2 px-3 appearance-none focus:ring-1 focus:ring-primary">
+<option>Alex Rivera</option>
+<option>Sarah Chen</option>
+<option>James Wilson</option>
+</select>
+<span class="material-symbols-outlined absolute right-2 top-1/2 -translate-y-1/2 text-sm pointer-events-none text-on-surface-variant">expand_more</span>
+</div>
+</div>
+<div class="flex justify-between items-center pt-2">
+<span class="text-xs font-bold text-on-surface-variant uppercase">Channel</span>
+<div class="flex items-center space-x-2 text-on-surface">
+<span class="material-symbols-outlined text-sm">alternate_email</span>
+<span class="text-sm font-medium">Email</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Similar Complaints -->
+<section class="bg-surface-container p-6 rounded-xl border border-outline-variant/10">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4">Similar Cases</h3>
+<div class="space-y-3">
+<div class="group bg-surface-container-high p-3 rounded-xl border border-outline-variant/5 hover:border-primary/30 cursor-pointer transition-all">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-mono text-on-surface">#CD-8812</span>
+<span class="text-[10px] font-bold text-primary px-1.5 py-0.5 bg-primary/10 rounded">88% Match</span>
+</div>
+<p class="text-xs text-on-surface-variant line-clamp-1">Incorrect pro-rata calculation on plan upgrade...</p>
+</div>
+<div class="group bg-surface-container-high p-3 rounded-xl border border-outline-variant/5 hover:border-primary/30 cursor-pointer transition-all">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-mono text-on-surface">#CD-8745</span>
+<span class="text-[10px] font-bold text-primary px-1.5 py-0.5 bg-primary/10 rounded">74% Match</span>
+</div>
+<p class="text-xs text-on-surface-variant line-clamp-1">Card charged after free trial cancellation...</p>
+</div>
+</div>
+</section>
+<!-- Escalate Button -->
+<div class="pt-4">
+<button class="w-full py-4 bg-error-container/20 hover:bg-error-container/40 text-error font-bold rounded-xl border border-error/30 transition-all flex items-center justify-center space-x-2 active:scale-[0.98]">
+<span class="material-symbols-outlined">warning</span>
+<span>Escalate to Billing Lead</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+</body></html>

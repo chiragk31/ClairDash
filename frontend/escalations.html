@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClairDash | Escalations Management</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-dim": "#0d0d18",
+                        "primary-fixed-dim": "#a67aff",
+                        "secondary-fixed": "#e2e0fc",
+                        "tertiary": "#ff97b2",
+                        "on-primary": "#3c0089",
+                        "secondary-container": "#45455b",
+                        "primary-fixed": "#b28cff",
+                        "on-secondary-fixed": "#3e3d53",
+                        "on-secondary-fixed-variant": "#5a5971",
+                        "on-surface-variant": "#aba9b9",
+                        "tertiary-fixed-dim": "#f77c9e",
+                        "surface-variant": "#242434",
+                        "surface-container": "#181826",
+                        "error-container": "#a70138",
+                        "error": "#ff6e84",
+                        "tertiary-fixed": "#ff8eac",
+                        "on-tertiary-fixed": "#380016",
+                        "on-surface": "#e9e6f7",
+                        "inverse-primary": "#742fe5",
+                        "surface-container-high": "#1e1e2d",
+                        "on-tertiary": "#6a0a31",
+                        "tertiary-container": "#fe81a4",
+                        "on-secondary-container": "#d0cee9",
+                        "background": "#0d0d18",
+                        "on-tertiary-fixed-variant": "#711036",
+                        "secondary-fixed-dim": "#d4d2ed",
+                        "outline": "#757482",
+                        "outline-variant": "#474754",
+                        "on-error": "#490013",
+                        "on-background": "#e9e6f7",
+                        "surface-container-highest": "#242434",
+                        "surface": "#0d0d18",
+                        "surface-tint": "#bd9dff",
+                        "primary-dim": "#8a4cfc",
+                        "surface-bright": "#2b2a3c",
+                        "inverse-surface": "#fcf8ff",
+                        "on-secondary": "#505066",
+                        "surface-container-low": "#12121e",
+                        "error-dim": "#d73357",
+                        "secondary": "#e2e0fc",
+                        "primary-container": "#b28cff",
+                        "on-primary-fixed-variant": "#390083",
+                        "primary": "#bd9dff",
+                        "on-tertiary-container": "#5a0027",
+                        "on-primary-container": "#2e006c",
+                        "on-primary-fixed": "#000000",
+                        "tertiary-dim": "#f17799",
+                        "inverse-on-surface": "#555461",
+                        "secondary-dim": "#d4d2ed",
+                        "on-error-container": "#ffb2b9"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.125rem", "lg": "0.25rem", "xl": "0.5rem", "full": "0.75rem"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #0d0d18;
+            color: #e9e6f7;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(43, 42, 60, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="min-h-screen overflow-x-hidden">
+<!-- TopNavBar (Shared Component) -->
+<nav class="fixed top-0 w-full z-50 bg-[#0d0d18]/60 backdrop-blur-md flex justify-between items-center px-6 h-16 w-full shadow-[0px_24px_48px_rgba(0,0,0,0.5)]">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold text-[#e9e6f7] tracking-tight">ClairDash</span>
+<div class="hidden md:flex gap-6">
+<a class="text-[#aba9b9] hover:bg-[#2b2a3c]/50 transition-colors px-3 py-2 rounded-lg text-sm font-medium" href="#">Dashboard</a>
+<a class="text-[#aba9b9] hover:bg-[#2b2a3c]/50 transition-colors px-3 py-2 rounded-lg text-sm font-medium" href="#">Complaints</a>
+<a class="text-[#aba9b9] hover:bg-[#2b2a3c]/50 transition-colors px-3 py-2 rounded-lg text-sm font-medium" href="#">Analytics</a>
+<a class="text-[#bd9dff] font-semibold border-b-2 border-[#7C3AED] px-3 py-2 text-sm" href="#">Escalations</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#aba9b9] cursor-pointer hover:text-[#e9e6f7]">notifications</span>
+<span class="material-symbols-outlined text-[#aba9b9] cursor-pointer hover:text-[#e9e6f7]">help</span>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container border border-outline-variant/30">
+<img alt="User avatar" data-alt="Close-up portrait of a professional male analyst in a modern office environment with soft bokeh background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGA0OHvkoLFvRly0U_zSedzyI_lLh3BR54ESyZVWgMQkVwaJUMzYpciWJ1JYLAbGeq65CGWS0iV-pcYgRVUN8XCQBya9fCVHuxzYszWR-suTY3_KHgxpWJzsm7MdPXZo1dVK9OMgF0OMMIydzVJAB85nvogJeIj6RPkvGcH9AwnT0GLeW6SsrL45-_Oy4gtEjVtZh4veMZUZapPJ8dvS1dqSwuL7Sw0y4L-IrhlBpIAbtp87tIZcWvjLCgt4gjpS6DsD2zJVLbtV41"/>
+</div>
+</div>
+</nav>
+<!-- SideNavBar (Shared Component) -->
+<aside class="fixed left-0 top-0 h-full w-64 z-40 bg-[#0d0d18] hidden md:flex flex-col pt-20 pb-6 px-4 gap-2">
+<div class="mb-8 px-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-primary-dim flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary">security</span>
+</div>
+<div>
+<div class="text-lg font-black text-[#e9e6f7]">ClairDash</div>
+<div class="text-xs text-[#aba9b9]">Enterprise Console</div>
+</div>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-4 py-3 text-[#aba9b9] hover:text-[#e9e6f7] hover:bg-[#12121e] transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-medium text-sm">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#aba9b9] hover:text-[#e9e6f7] hover:bg-[#12121e] transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-medium text-sm">Complaints</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#aba9b9] hover:text-[#e9e6f7] hover:bg-[#12121e] transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">insert_chart</span>
+<span class="font-medium text-sm">Analytics</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-[#181826] text-[#bd9dff] rounded-lg shadow-[inset_0_0_0_1px_rgba(189,157,255,0.15)] transition-all" href="#">
+<span class="material-symbols-outlined">priority_high</span>
+<span class="font-medium text-sm">Escalations</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-[#aba9b9] hover:text-[#e9e6f7] hover:bg-[#12121e] transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium text-sm">Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 pt-16 min-h-screen">
+<!-- Alert Banner -->
+<div class="bg-error-container/20 border-b border-error-container/30 px-6 py-4 flex items-center gap-4">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+<p class="text-on-surface font-medium text-sm tracking-wide uppercase">3 complaints have breached SLA — immediate action required</p>
+</div>
+<div class="p-8 max-w-[1600px] mx-auto">
+<!-- Page Header -->
+<div class="flex items-center justify-between mb-10">
+<div class="flex items-center gap-4">
+<h1 class="text-3xl font-extrabold text-on-surface tracking-tight">Escalations</h1>
+<span class="bg-error px-2.5 py-0.5 rounded-full text-on-error font-bold text-sm">3</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="bg-surface-container-highest text-on-surface px-4 py-2 rounded-xl text-sm font-semibold hover:bg-surface-bright transition-all">Export Report</button>
+<button class="bg-gradient-to-br from-primary-dim to-primary text-on-primary-container px-5 py-2 rounded-xl text-sm font-bold shadow-lg shadow-primary/20">Audit Trail</button>
+</div>
+</div>
+<!-- Bento Layout Content -->
+<div class="flex flex-col lg:flex-row gap-8">
+<!-- Left Column (75%) -->
+<div class="lg:w-3/4 flex flex-col gap-8">
+<!-- Section 1: SLA Breached -->
+<section class="bg-surface-container rounded-xl overflow-hidden shadow-2xl relative">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
+<div class="p-6 border-b border-outline-variant/10 flex justify-between items-center bg-surface-container-high/50">
+<h2 class="text-lg font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-xl">gavel</span>
+                                SLA Breached
+                            </h2>
+<span class="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Urgent Resolution Needed</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Complaint ID</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Customer</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Subject</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Category</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Breached By</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-bright/30 transition-colors group">
+<td class="px-6 py-5">
+<span class="font-mono text-primary font-bold">#CD-9281</span>
+</td>
+<td class="px-6 py-5">
+<div class="text-sm font-semibold text-on-surface">sarah.j@techcorp.io</div>
+<div class="text-[10px] text-on-surface-variant uppercase font-medium">TechCorp Enterprise</div>
+</td>
+<td class="px-6 py-5">
+<div class="text-sm text-on-surface line-clamp-1 max-w-[200px]">Critical system outage during migration</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-2 py-1 rounded bg-secondary-container/30 text-secondary text-[10px] font-bold uppercase tracking-tight">Technical</span>
+</td>
+<td class="px-6 py-5">
+<div class="flex flex-col">
+<span class="text-error font-bold text-sm">2.5h overdue</span>
+<div class="text-[10px] text-on-surface-variant">Assigned: Alex Rivera</div>
+</div>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="bg-error/10 text-error hover:bg-error hover:text-on-error transition-all px-4 py-1.5 rounded-lg text-xs font-bold border border-error/20">Resolve</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Section 2: Escalated Complaints -->
+<section class="bg-surface-container rounded-xl overflow-hidden shadow-2xl relative">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-tertiary-container"></div>
+<div class="p-6 border-b border-outline-variant/10 flex justify-between items-center bg-surface-container-high/50">
+<h2 class="text-lg font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary text-xl">priority_high</span>
+                                Escalated Complaints
+                            </h2>
+<div class="flex gap-2">
+<span class="px-2 py-0.5 rounded bg-tertiary/10 text-tertiary text-[10px] font-bold uppercase">VIP Priority</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low">
+<tr>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Complaint ID</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Customer</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Escalation Reason</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Escalated At</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Priority</th>
+<th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<tr class="hover:bg-surface-bright/30 transition-colors">
+<td class="px-6 py-5">
+<span class="font-mono text-primary font-bold">#CD-9275</span>
+</td>
+<td class="px-6 py-5">
+<div class="text-sm font-semibold text-on-surface">mike.ross@pearson.com</div>
+<div class="text-[10px] text-on-surface-variant uppercase">Pearson Hardman</div>
+</td>
+<td class="px-6 py-5">
+<div class="text-sm text-on-surface italic">"VIP Customer"</div>
+<div class="text-[10px] text-on-surface-variant">Duplicate billing charges...</div>
+</td>
+<td class="px-6 py-5">
+<div class="text-xs text-on-surface">Dec 15, 11:45 AM</div>
+<div class="text-[10px] text-on-surface-variant">To: Marcus Vane</div>
+</td>
+<td class="px-6 py-5">
+<span class="px-2.5 py-1 rounded-full bg-tertiary/15 text-tertiary text-[10px] font-black uppercase border border-tertiary/30">Critical</span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="bg-primary/10 text-primary hover:bg-primary hover:text-on-primary transition-all px-4 py-1.5 rounded-lg text-xs font-bold border border-primary/20">View</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Right Side Panel (25%) -->
+<aside class="lg:w-1/4">
+<div class="bg-surface-container rounded-xl overflow-hidden shadow-2xl border border-outline-variant/10 sticky top-24">
+<div class="p-6 border-b border-outline-variant/10 bg-surface-container-high/50">
+<h2 class="text-lg font-bold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">bolt</span>
+                                Quick Escalate
+                            </h2>
+<p class="text-xs text-on-surface-variant mt-1">Manual elevation for critical issues</p>
+</div>
+<div class="p-6 space-y-5">
+<div>
+<label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">Complaint ID</label>
+<input class="w-full bg-surface-container-low border-none rounded-lg text-sm text-on-surface focus:ring-1 focus:ring-primary py-3" placeholder="e.g. #CD-XXXX" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">Escalation Reason</label>
+<select class="w-full bg-surface-container-low border-none rounded-lg text-sm text-on-surface focus:ring-1 focus:ring-primary py-3">
+<option>SLA Breach</option>
+<option>Customer Threat</option>
+<option>Regulatory</option>
+<option>VIP Customer</option>
+</select>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">Priority</label>
+<select class="w-full bg-surface-container-low border-none rounded-lg text-sm text-on-surface focus:ring-1 focus:ring-primary py-3">
+<option>High</option>
+<option selected="">Critical</option>
+</select>
+</div>
+<div>
+<label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">Assign To</label>
+<select class="w-full bg-surface-container-low border-none rounded-lg text-sm text-on-surface focus:ring-1 focus:ring-primary py-3">
+<option>Team Lead</option>
+<option>Manager</option>
+<option>Director</option>
+</select>
+</div>
+</div>
+<div>
+<label class="block text-xs font-bold text-on-surface-variant uppercase mb-2">Internal Notes</label>
+<textarea class="w-full bg-surface-container-low border-none rounded-lg text-sm text-on-surface focus:ring-1 focus:ring-primary py-3" placeholder="Brief context for the escalation..." rows="3"></textarea>
+</div>
+<button class="w-full bg-error text-on-error py-4 rounded-xl font-bold uppercase tracking-widest text-sm shadow-lg shadow-error/20 hover:bg-error-dim transition-all active:scale-[0.98]">
+                                Escalate Now
+                            </button>
+</div>
+</div>
+<!-- Supplemental Meta Info -->
+<div class="mt-6 space-y-4">
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-secondary text-sm">timelapse</span>
+<span class="text-xs font-bold text-secondary-fixed-dim uppercase tracking-tight">Average Resolution</span>
+</div>
+<div class="text-2xl font-black text-on-surface">4h 12m</div>
+<div class="text-[10px] text-on-surface-variant mt-1 flex items-center gap-1">
+<span class="text-error">↑ 14%</span> vs last week
+                            </div>
+</div>
+<div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/10">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-xs font-bold text-primary-fixed uppercase tracking-tight">VIP Active Cases</span>
+</div>
+<div class="text-2xl font-black text-on-surface">12</div>
+<div class="flex mt-2 -space-x-2">
+<div class="w-6 h-6 rounded-full border-2 border-surface border overflow-hidden">
+<img alt="avatar" data-alt="Female professional portrait for avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8Ot2OmPdL8XPaP-Yj7zCMjfuoM9EKo43pmmiiEj6PY6ftaboQqj1khylaTPNBx-4igR5_o5yYs68xllCWbPV9uZ1UOi5AjhPNxClvq-c9hkvUhiMtiiT8V0LkXTx46g708UDnBiTze8-45CPfHXRM8BESqysO5JTPjfl7bpzHgcrtnr8zuiq7MAI_LxEOYrS0DYcxWvoX1v6kZwT32cycljYcOj_3CQFuFrA4qN1orbd3gQwLArIfWu14jxXkm9TcwzTDf660p7e7"/>
+</div>
+<div class="w-6 h-6 rounded-full border-2 border-surface border overflow-hidden">
+<img alt="avatar" data-alt="Male professional portrait for avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRdfB928fFYqbroMERBr1KMty8_dou_uCvxoIp5bCihLrWR_WVDKJDvWXQ1VY5_Jc9gSCEwZP9rjIBba6sYf7TJKGUywo6Mlq1r2XOcOJ_w0m1IERBYBlAwyHUuRhR0ovMxfeF0tit76irCNcrEvPD8FPQKVhlLJWPqJ40h9HStmlPiuFUIpEogLzF5L4AiXIkCUKVbohjj-m-IYvbHbdxH3ZDpjndnTniQdLqKzCYUM2D7Aa5GbiHyvRBKlKDDNMcTnHStdXd-OHQ"/>
+</div>
+<div class="w-6 h-6 rounded-full border-2 border-surface bg-surface-bright flex items-center justify-center text-[8px] font-bold">+10</div>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</div>
+</main>
+<!-- Mobile Bottom NavBar (Hidden on Desktop) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 glass-panel border-t border-outline-variant/10 z-50 flex justify-around items-center px-4">
+<button class="flex flex-col items-center gap-1 text-[#aba9b9]">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-[10px] font-medium">Dash</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#aba9b9]">
+<span class="material-symbols-outlined">forum</span>
+<span class="text-[10px] font-medium">Complaints</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#bd9dff]">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">priority_high</span>
+<span class="text-[10px] font-bold">Escalate</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-[#aba9b9]">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</button>
+</nav>
+</body></html>

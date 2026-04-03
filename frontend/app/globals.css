@@ -1,26 +1,126 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ─── Design Tokens (Tailwind v4 @theme) ────────────────────────────────────── */
+@theme {
+  /* Colors */
+  --color-surface:                   #0d0d18;
+  --color-surface-dim:               #0d0d18;
+  --color-surface-bright:            #2b2a3c;
+  --color-surface-container-lowest:  #000000;
+  --color-surface-container-low:     #12121e;
+  --color-surface-container:         #181826;
+  --color-surface-container-high:    #1e1e2d;
+  --color-surface-container-highest: #242434;
+  --color-surface-variant:           #242434;
+  --color-surface-tint:              #bd9dff;
+
+  --color-on-surface:                #e9e6f7;
+  --color-on-surface-variant:        #aba9b9;
+  --color-on-background:             #e9e6f7;
+  --color-background:                #0d0d18;
+
+  --color-primary:                   #bd9dff;
+  --color-primary-dim:               #8a4cfc;
+  --color-primary-fixed:             #b28cff;
+  --color-primary-fixed-dim:         #a67aff;
+  --color-on-primary:                #3c0089;
+  --color-on-primary-fixed:          #000000;
+  --color-on-primary-fixed-variant:  #390083;
+  --color-on-primary-container:      #2e006c;
+  --color-primary-container:         #b28cff;
+  --color-inverse-primary:           #742fe5;
+
+  --color-secondary:                 #e2e0fc;
+  --color-secondary-dim:             #d4d2ed;
+  --color-secondary-fixed:           #e2e0fc;
+  --color-secondary-fixed-dim:       #d4d2ed;
+  --color-on-secondary:              #505066;
+  --color-on-secondary-fixed:        #3e3d53;
+  --color-on-secondary-fixed-variant:#5a5971;
+  --color-on-secondary-container:    #d0cee9;
+  --color-secondary-container:       #45455b;
+
+  --color-tertiary:                  #ff97b2;
+  --color-tertiary-dim:              #f17799;
+  --color-tertiary-fixed:            #ff8eac;
+  --color-tertiary-fixed-dim:        #f77c9e;
+  --color-tertiary-container:        #fe81a4;
+  --color-on-tertiary:               #6a0a31;
+  --color-on-tertiary-fixed:         #380016;
+  --color-on-tertiary-fixed-variant: #711036;
+  --color-on-tertiary-container:     #5a0027;
+
+  --color-error:                     #ff6e84;
+  --color-error-dim:                 #d73357;
+  --color-error-container:           #a70138;
+  --color-on-error:                  #490013;
+  --color-on-error-container:        #ffb2b9;
+
+  --color-outline:                   #757482;
+  --color-outline-variant:           #474754;
+
+  --color-inverse-surface:           #fcf8ff;
+  --color-inverse-on-surface:        #555461;
+
+  /* Typography */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", monospace;
+
+  /* Border Radius */
+  --radius:    0.125rem;
+  --radius-lg: 0.25rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  --radius-full: 9999px;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base Styles ───────────────────────────────────────────────────────────── */
+html {
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", sans-serif;
+  background-color: #0d0d18;
+  color: #e9e6f7;
+}
+
+/* ─── Material Symbols ──────────────────────────────────────────────────────── */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+  font-family: "Material Symbols Outlined";
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.material-symbols-filled {
+  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+/* ─── Custom Scrollbar ──────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0d18;
+}
+::-webkit-scrollbar-thumb {
+  background: #242434;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2b2a3c;
 }
