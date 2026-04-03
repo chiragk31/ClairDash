@@ -1,7 +1,8 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status,Query
+from typing import Optional
 from app.models.complaint import ComplaintIngest, ComplaintResponse
 from app.services.complaint_service import ingest_complaint
-
+from app.core.database import supabase
 router = APIRouter()
 
 
