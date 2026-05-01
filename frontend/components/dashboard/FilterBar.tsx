@@ -20,10 +20,12 @@ const CATEGORY_OPTIONS: FilterOption[] = [
   { value: "", label: "Category" },
   { value: "billing", label: "Billing" },
   { value: "technical", label: "Technical" },
-  { value: "shipping", label: "Shipping" },
-  { value: "api", label: "API Support" },
+  { value: "delivery", label: "Delivery" },
+  { value: "product_quality", label: "Product Quality" },
+  { value: "account", label: "Account" },
+  { value: "refund", label: "Refund" },
+  { value: "general", label: "General" },
 ];
-
 const SEVERITY_OPTIONS: FilterOption[] = [
   { value: "", label: "Severity" },
   { value: "critical", label: "Critical" },

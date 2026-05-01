@@ -1,108 +1,96 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import StatCard, { type StatCardProps } from "@/components/dashboard/StatCard";
 import FilterBar from "@/components/dashboard/FilterBar";
 import ComplaintTable, { type Ticket } from "@/components/dashboard/ComplaintTable";
 import Pagination from "@/components/dashboard/Pagination";
 import FloatingActionButton from "@/components/ui/FloatingActionButton";
-
-// ─── Static Data (replace with API calls / server component fetching) ─────────
-
-const STAT_CARDS: StatCardProps[] = [
-  {
-    title: "Total Complaints",
-    value: "1,284",
-    trendIcon: "trending_up",
-    badge: "+12.4%",
-    bgIcon: "inbox",
-    variant: "default",
-  },
-  {
-    title: "Open Tickets",
-    value: "432",
-    trendIcon: "hourglass_empty",
-    badge: "High Load",
-    bgIcon: "pending",
-    variant: "warning",
-  },
-  {
-    title: "Resolved Today",
-    value: "89",
-    trendIcon: "check_circle",
-    badge: "Target Met",
-    bgIcon: "task_alt",
-    variant: "success",
-  },
-  {
-    title: "SLA Breached",
-    value: "12",
-    trendIcon: "dangerous",
-    badge: "Action Req",
-    bgIcon: "warning",
-    variant: "danger",
-  },
-];
-
-const MOCK_TICKETS: Ticket[] = [
-  {
-    id: "#CD-9281",
-    senderEmail: "sarah.j@techcorp.io",
-    senderTier: "Enterprise Tier",
-    subject: "Critical system outage during migration...",
-    category: "Technical",
-    severity: "critical",
-    sentiment: "angry",
-    status: "open",
-    slaDeadline: "00:14:22",
-    slaProgress: 80,
-    assignee: {
-      name: "Jordan Blake",
-      avatarUrl:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuBJoG8M655JWDXBaB_V7Ra-t5vhQZr6O5haqEjW4Zi4a7oHKPUk8UpZUZbYW0htI1Y0Kfy20LiSr9QGtQKuZcInCIEMV3aW7p0KPuQdeqDzNQyxQyHGI_2vxstuMYrpXJr77n7WKcgQ5LtB-EzZH0WVX1XcJn5oEwjT9Yda2Y5NxPygoQMB9UMGaWnQDdpEztvLniTHS-5gpzaXGAPCatN--LRA6Lirxkoqgn3vGqjDImMuw8U9dNOaCTkHSlI04yvW4po7qIjPx2lb",
-    },
-  },
-  {
-    id: "#CD-9275",
-    senderEmail: "mike.ross@pearson.com",
-    senderTier: "Basic Plan",
-    subject: "Duplicate billing charges on monthly...",
-    category: "Billing",
-    severity: "high",
-    sentiment: "negative",
-    status: "in_progress",
-    slaDeadline: "04:45:00",
-    slaProgress: 33,
-    assignee: { name: "AM" },
-  },
-  {
-    id: "#CD-9122",
-    senderEmail: "emma.v@creative.net",
-    senderTier: "Pro Plan",
-    subject: "Question about integration webhooks...",
-    category: "API Support",
-    severity: "low",
-    sentiment: "positive",
-    status: "resolved",
-    slaDeadline: "completed",
-    slaProgress: 100,
-    assignee: {
-      name: "Priya Shah",
-      avatarUrl:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDquHxXjnQVc7hfoChBnvuh8buGTDt_ZMZZbeLnQFdstvnSTXbUlzeW6hue_ClfMwsF5kZkhrkjz9bpnAqklel1hFSojZK5L5EmL7HRFvtQ12hNko4Q_7Y4X-cfPvPX5ri_sc3ZL6RvTRpSbd4CRBGCH3OpA-HExLpNiu93NPLGMPHgXzTlE_-_Att8ip7XM8mf2eE7uF6QnCbQrn8JUduI0Yb_qhOZc2YYR88ab1KF3fGe84oWemmRNoqAZrEpnh7ClJYW8QwANnmM",
-    },
-  },
-];
+import { api, mapComplaint } from "@/lib/api";
 
 const PAGE_SIZE = 15;
-const TOTAL_OPEN = 432;
-const TOTAL_PAGES = Math.ceil(TOTAL_OPEN / PAGE_SIZE);
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loadingTable, setLoadingTable] = useState(true);
+  const [filters, setFilters] = useState({
+    search: "", category: "", severity: "", sentiment: "", status: "",
+  });
+  const [statCards, setStatCards] = useState<StatCardProps[]>([
+    { title: "Total Complaints", value: "—", trendIcon: "trending_up", badge: "Loading", bgIcon: "inbox", variant: "default" },
+    { title: "Open Tickets", value: "—", trendIcon: "hourglass_empty", badge: "Loading", bgIcon: "pending", variant: "warning" },
+    { title: "Resolved", value: "—", trendIcon: "check_circle", badge: "Loading", bgIcon: "task_alt", variant: "success" },
+    { title: "SLA Breached", value: "—", trendIcon: "dangerous", badge: "Loading", bgIcon: "warning", variant: "danger" },
+  ]);
+
+  // Fetch KPI stats
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const s = await api.getStats();
+        setStatCards([
+          {
+            title: "Total Complaints",
+            value: s.total?.toLocaleString() ?? "0",
+            trendIcon: "trending_up",
+            badge: "All time",
+            bgIcon: "inbox",
+            variant: "default",
+          },
+          {
+            title: "Open Tickets",
+            value: s.open?.toLocaleString() ?? "0",
+            trendIcon: "hourglass_empty",
+            badge: s.open > 50 ? "High Load" : "Normal",
+            bgIcon: "pending",
+            variant: "warning",
+          },
+          {
+            title: "Resolved",
+            value: s.resolved?.toLocaleString() ?? "0",
+            trendIcon: "check_circle",
+            badge: "All time",
+            bgIcon: "task_alt",
+            variant: "success",
+          },
+          {
+            title: "SLA Breached",
+            value: s.sla_breached?.toLocaleString() ?? "0",
+            trendIcon: "dangerous",
+            badge: s.sla_breached > 0 ? "Action Req" : "All Clear",
+            bgIcon: "warning",
+            variant: s.sla_breached > 0 ? "danger" : "success",
+          },
+        ]);
+      } catch (e) {
+        console.error("Failed to fetch stats:", e);
+      }
+    };
+    fetchStats();
+  }, []);
+
+  // Fetch complaints table
+
+  useEffect(() => {
+    const fetchComplaints = async () => {
+      setLoadingTable(true);
+      try {
+        const res = await api.getComplaints({ ...filters, page: currentPage });
+        setTickets((res.data ?? []).map(mapComplaint));
+        setTotal(res.total ?? 0);
+        setTotalPages(res.total_pages ?? 1);
+      } catch (e) {
+        console.error("Failed to fetch complaints:", e);
+      } finally {
+        setLoadingTable(false);
+      }
+    };
+    fetchComplaints();
+  }, [currentPage, filters]);
 
   return (
     <>
@@ -111,7 +99,7 @@ export default function DashboardPage() {
         {/* ── Hero Stats Row ──────────────────────────────────────────────── */}
         <section aria-label="Key metrics">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {STAT_CARDS.map((card) => (
+            {statCards.map((card) => (
               <StatCard key={card.title} {...card} />
             ))}
           </div>
@@ -123,17 +111,43 @@ export default function DashboardPage() {
           className="bg-[#181826] rounded-3xl overflow-hidden shadow-2xl"
         >
           {/* Filter bar */}
-          <FilterBar />
+          {/* Filter bar */}
+          <FilterBar
+            onSearch={(query) => {
+              setCurrentPage(1);
+              setFilters((prev) => ({ ...prev, search: query }));
+            }}
+            onFilterChange={(key, value) => {
+              setCurrentPage(1);
+              setFilters((prev) => ({ ...prev, [key]: value }));
+            }}
+          />
 
           {/* Table */}
-          <ComplaintTable tickets={MOCK_TICKETS} />
+          {loadingTable ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-8 h-8 border-2 border-[#bd9dff] border-t-transparent rounded-full animate-spin" />
+                <p className="text-sm text-[#aba9b9]">Loading complaints...</p>
+              </div>
+            </div>
+          ) : tickets.length === 0 ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-center">
+                <span className="material-symbols-outlined text-4xl text-[#474754]">inbox</span>
+                <p className="text-[#aba9b9] mt-2 font-bold">No complaints yet</p>
+              </div>
+            </div>
+          ) : (
+            <ComplaintTable tickets={tickets} />
+          )}
 
           {/* Pagination */}
           <Pagination
             currentPage={currentPage}
-            totalPages={TOTAL_PAGES}
-            showing={PAGE_SIZE}
-            total={TOTAL_OPEN}
+            totalPages={totalPages}
+            showing={tickets.length}
+            total={total}
             onPageChange={setCurrentPage}
           />
         </section>

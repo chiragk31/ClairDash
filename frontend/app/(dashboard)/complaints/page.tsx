@@ -1,72 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 
-import FilterBar    from "@/components/dashboard/FilterBar";
+import FilterBar from "@/components/dashboard/FilterBar";
 import ComplaintTable, { type Ticket } from "@/components/dashboard/ComplaintTable";
-import Pagination   from "@/components/dashboard/Pagination";
+import Pagination from "@/components/dashboard/Pagination";
 import FloatingActionButton from "@/components/ui/FloatingActionButton";
+import { api, mapComplaint } from "@/lib/api";
 
-// ─── Mock data (replace with API fetch) ───────────────────────────────────────
-
-const MOCK_TICKETS: Ticket[] = [
-  {
-    id: "#CD-9281",
-    senderEmail: "sarah.j@techcorp.io",
-    senderTier: "Enterprise Tier",
-    subject: "Critical system outage during migration...",
-    category: "Technical",
-    severity: "critical",
-    sentiment: "angry",
-    status: "open",
-    slaDeadline: "00:14:22",
-    slaProgress: 80,
-    assignee: {
-      name: "Jordan Blake",
-      avatarUrl:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuBJoG8M655JWDXBaB_V7Ra-t5vhQZr6O5haqEjW4Zi4a7oHKPUk8UpZUZbYW0htI1Y0Kfy20LiSr9QGtQKuZcInCIEMV3aW7p0KPuQdeqDzNQyxQyHGI_2vxstuMYrpXJr77n7WKcgQ5LtB-EzZH0WVX1XcJn5oEwjT9Yda2Y5NxPygoQMB9UMGaWnQDdpEztvLniTHS-5gpzaXGAPCatN--LRA6Lirxkoqgn3vGqjDImMuw8U9dNOaCTkHSlI04yvW4po7qIjPx2lb",
-    },
-  },
-  {
-    id: "#CD-9275",
-    senderEmail: "mike.ross@pearson.com",
-    senderTier: "Basic Plan",
-    subject: "Duplicate billing charges on monthly...",
-    category: "Billing",
-    severity: "high",
-    sentiment: "negative",
-    status: "in_progress",
-    slaDeadline: "04:45:00",
-    slaProgress: 33,
-    assignee: { name: "AM" },
-  },
-  {
-    id: "#CD-9122",
-    senderEmail: "emma.v@creative.net",
-    senderTier: "Pro Plan",
-    subject: "Question about integration webhooks...",
-    category: "API Support",
-    severity: "low",
-    sentiment: "positive",
-    status: "resolved",
-    slaDeadline: "completed",
-    slaProgress: 100,
-    assignee: {
-      name: "Priya Shah",
-      avatarUrl:
-        "https://lh3.googleusercontent.com/aida-public/AB6AXuDquHxXjnQVc7hfoChBnvuh8buGTDt_ZMZZbeLnQFdstvnSTXbUlzeW6hue_ClfMwsF5kZkhrkjz9bpnAqklel1hFSojZK5L5EmL7HRFvtQ12hNko4Q_7Y4X-cfPvPX5ri_sc3ZL6RvTRpSbd4CRBGCH3OpA-HExLpNiu93NPLGMPHgXzTlE_-_Att8ip7XM8mf2eE7uF6QnCbQrn8JUduI0Yb_qhOZc2YYR88ab1KF3fGe84oWemmRNoqAZrEpnh7ClJYW8QwANnmM",
-    },
-  },
-];
-
-const PAGE_SIZE  = 15;
-const TOTAL_OPEN = 432;
-const TOTAL_PAGES = Math.ceil(TOTAL_OPEN / PAGE_SIZE);
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
+const PAGE_SIZE = 15;
 
 export default function ComplaintsListPage() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({
+    search: "", category: "", severity: "", sentiment: "", status: "",
+  });
+
+  const fetchComplaints = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await api.getComplaints({ ...filters, page: currentPage });
+      setTickets((res.data ?? []).map(mapComplaint));
+      setTotal(res.total ?? 0);
+      setTotalPages(res.total_pages ?? 1);
+    } catch (e) {
+      console.error("Failed to fetch complaints:", e);
+    } finally {
+      setLoading(false);
+    }
+  }, [filters, currentPage]);
+
+  useEffect(() => { fetchComplaints(); }, [fetchComplaints]);
+
+  const handleFilterChange = (key: string, value: string) => {
+    setCurrentPage(1);
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleSearch = (query: string) => {
+    setCurrentPage(1);
+    setFilters((prev) => ({ ...prev, search: query }));
+  };
 
   return (
     <>
@@ -78,7 +56,9 @@ export default function ComplaintsListPage() {
             Complaints
           </h1>
           <p className="text-sm text-[#aba9b9] mt-1">
-            All incoming customer complaints — filter, assign, and resolve.
+            {loading
+              ? "Loading..."
+              : `${total} total complaints — filter, assign, and resolve.`}
           </p>
         </div>
 
@@ -87,16 +67,36 @@ export default function ComplaintsListPage() {
           aria-label="Complaints inbox"
           className="bg-[#181826] rounded-3xl overflow-hidden shadow-2xl"
         >
-          <FilterBar />
+          <FilterBar
+            onSearch={handleSearch}
+            onFilterChange={handleFilterChange}
+          />
 
-          <ComplaintTable tickets={MOCK_TICKETS} />
+          {loading ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="flex flex-col items-center gap-3">
+                <div className="w-8 h-8 border-2 border-[#bd9dff] border-t-transparent rounded-full animate-spin" />
+                <p className="text-sm text-[#aba9b9]">Loading complaints...</p>
+              </div>
+            </div>
+          ) : tickets.length === 0 ? (
+            <div className="flex items-center justify-center h-64">
+              <div className="text-center">
+                <span className="material-symbols-outlined text-4xl text-[#474754]">inbox</span>
+                <p className="text-[#aba9b9] mt-2 font-bold">No complaints found</p>
+                <p className="text-sm text-[#474754] mt-1">Try adjusting your filters</p>
+              </div>
+            </div>
+          ) : (
+            <ComplaintTable tickets={tickets} />
+          )}
 
           <Pagination
             currentPage={currentPage}
-            totalPages={TOTAL_PAGES}
-            showing={PAGE_SIZE}
-            total={TOTAL_OPEN}
-            onPageChange={setCurrentPage}
+            totalPages={totalPages}
+            showing={tickets.length}
+            total={total}
+            onPageChange={(page) => { setCurrentPage(page); }}
           />
         </section>
       </main>

@@ -1,114 +1,141 @@
 "use client";
 
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 
-import ComplaintHeader    from "@/components/complaint/ComplaintHeader";
-import OriginalMessage    from "@/components/complaint/OriginalMessage";
+import ComplaintHeader from "@/components/complaint/ComplaintHeader";
+import OriginalMessage from "@/components/complaint/OriginalMessage";
 import CommunicationThread from "@/components/complaint/CommunicationThread";
-import AIResponseDraft    from "@/components/complaint/AIResponseDraft";
-import AIAnalysisCard     from "@/components/complaint/AIAnalysisCard";
-import SLATracker         from "@/components/complaint/SLATracker";
-import ComplaintSettings  from "@/components/complaint/ComplaintSettings";
-import SimilarCases       from "@/components/complaint/SimilarCases";
+import AIResponseDraft from "@/components/complaint/AIResponseDraft";
+import AIAnalysisCard from "@/components/complaint/AIAnalysisCard";
+import SLATracker from "@/components/complaint/SLATracker";
+import ComplaintSettings from "@/components/complaint/ComplaintSettings";
+import SimilarCases from "@/components/complaint/SimilarCases";
 
-import type { ThreadMessage }  from "@/components/complaint/CommunicationThread";
-import type { SimilarCase }    from "@/components/complaint/SimilarCases";
-import type { Agent }          from "@/components/complaint/ComplaintSettings";
+import type { ThreadMessage } from "@/components/complaint/CommunicationThread";
+import type { SimilarCase } from "@/components/complaint/SimilarCases";
+import type { Agent } from "@/components/complaint/ComplaintSettings";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Static mock data — replace with:
-//   const complaint = await fetchComplaint(params.id)  (Server Component)
-// ─────────────────────────────────────────────────────────────────────────────
-
-const MOCK_COMPLAINT = {
-  ticketId:       "#CD-9275",
-  title:          "Duplicate billing charges on monthly invoice",
-  createdAt:      "Dec 14, 10:24 AM",
-  senderName:     "Mike Ross",
-  senderEmail:    "mike.ross@pearson.com",
-  senderInitials: "MR",
-
-  originalMessage:
-    "Hi team, I noticed that I was charged twice for my 'Pro Plan' subscription on this month's invoice. One charge was on the 1st and another today on the 14th. This seems like a system error as my dashboard only shows one active subscription. Can you please look into this and issue a refund for the duplicate transaction as soon as possible? Thanks, Mike.",
-
-  aiDraft:
-    "Hi Mike, I'm sorry for the billing error you experienced. I've successfully verified the duplicate charge and have initiated a refund of $49.00 to your original payment method. You should see this reflect in your bank statement within 3-5 business days. Apologies for the inconvenience.",
-
-  ai: {
-    category:  "Billing",
-    severity:  "High",
-    sentiment: "Negative",
-    keyIssues: [
-      { icon: "error", iconColor: "text-[#ff97b2]", text: "Duplicate charge error in billing cycle" },
-      { icon: "bolt",  iconColor: "text-[#bd9dff]", text: "Customer requesting immediate refund" },
-      { icon: "info",  iconColor: "text-[#bd9dff]", text: "Likely subscription logic synchronization failure" },
-    ],
-  },
-
-  sla: {
-    progressPercent: 72,
-    timeRemaining:   "4h 12m",
-    deadline:        "Dec 15, 15:45",
-  },
-
-  agents: [
-    { id: "alex",  name: "Alex Rivera" },
-    { id: "sarah", name: "Sarah Chen" },
-    { id: "james", name: "James Wilson" },
-  ] satisfies Agent[],
-  currentAgentId: "alex",
-  currentStatus:  "Open" as const,
-  channel:        "Email" as const,
-
-  similarCases: [
-    {
-      id:           "CD-8812",
-      ticketId:     "#CD-8812",
-      matchPercent: 88,
-      summary:      "Incorrect pro-rata calculation on plan upgrade...",
-    },
-    {
-      id:           "CD-8745",
-      ticketId:     "#CD-8745",
-      matchPercent: 74,
-      summary:      "Card charged after free trial cancellation...",
-    },
-  ] satisfies SimilarCase[],
-};
-
-const MOCK_THREAD: ThreadMessage[] = [
-  {
-    id:        "msg-1",
-    role:      "customer",
-    text:      "Is there any update on the refund? I haven't seen the credit in my account yet.",
-    timestamp: "Dec 15, 09:15 AM",
-  },
-  {
-    id:             "msg-2",
-    role:           "agent",
-    text:           "Hi Mike, I'm currently verifying the transaction IDs with our payment provider. It looks like a webhook latency issue. I'll have an update for you shortly.",
-    timestamp:      "Dec 15, 11:30 AM",
-    agentName:      "Alex R.",
-    agentAvatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuB37WCLFGtlbJkXdI7CE4zyiRqBm4zWKz_d4laOPxkl72579ONm41d6YQn6t_2JEiDOWqaNvtN454_OzkoVCxW86RtI9cpE5a-PDDZZlluBXR6P5YW9xBsxCSnYqRQTX0jVkfwoAEDTHpLZUwSvrPBG6byRi_VS6YVwA70W_SqazLpghSew7oeKI_XWT26T_K2oKrArGRLtA8oP0zMGG-K67O6NSoPKvUXI8WkcW1r1cZGKmdyIrZUJDlWx-hOUFix-_V1b8ptYWWwN",
-  },
-];
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Page
-// ─────────────────────────────────────────────────────────────────────────────
+import { api } from "@/lib/api";
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default function ComplaintDetailPage({ params }: Props) {
-  const c = MOCK_COMPLAINT;
+  const { id } = use(params);
 
-  const handleStatusChange  = (status: string)  => console.log("Status →", status);
-  const handleAgentChange   = (agentId: string)  => console.log("Agent →",  agentId);
-  const handleEscalate      = ()                 => console.log("Escalated", params.id);
-  const handleRegenerate    = ()                 => console.log("Regenerate draft");
-  const handleSend          = (msg: string)      => console.log("Send →", msg);
+  const [complaint, setComplaint] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetch_ = async () => {
+      try {
+        const data = await api.getComplaintById(id);
+        setComplaint(data);
+      } catch (e: any) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetch_();
+  }, [id]);
+
+  const handleStatusChange = async (status: string) => {
+    await api.updateComplaint(id, { status });
+    setComplaint((prev: any) => ({ ...prev, status }));
+  };
+
+  const handleAgentChange = async (agentId: string) => {
+    await api.updateComplaint(id, { assigned_to: agentId });
+    setComplaint((prev: any) => ({ ...prev, assigned_to: agentId }));
+  };
+
+  const handleEscalate = () => console.log("Escalated", id);
+  const handleRegenerate = () => console.log("Regenerate draft");
+  const handleSend = (msg: string) => console.log("Send →", msg);
+
+  // ── Loading ────────────────────────────────────────────────────────────────
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-full min-h-[60vh]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-[#bd9dff] border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-[#aba9b9]">Loading complaint...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Error ──────────────────────────────────────────────────────────────────
+  if (error || !complaint) {
+    return (
+      <div className="flex items-center justify-center h-full min-h-[60vh]">
+        <div className="text-center">
+          <p className="text-[#ff6e84] font-bold">Complaint not found</p>
+          <p className="text-sm text-[#aba9b9] mt-1">{error}</p>
+          <Link
+            href="/complaints"
+            className="mt-4 inline-block px-4 py-2 bg-[#bd9dff]/10 text-[#bd9dff] rounded-lg text-sm font-bold hover:bg-[#bd9dff]/20 transition-colors"
+          >
+            Back to Inbox
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Map API data to component props ───────────────────────────────────────
+  const now = new Date();
+  const deadline = complaint.sla_deadline ? new Date(complaint.sla_deadline) : null;
+  const created = new Date(complaint.created_at);
+
+  const slaProgress = deadline
+    ? Math.min(100, Math.round(((now.getTime() - created.getTime()) / (deadline.getTime() - created.getTime())) * 100))
+    : 0;
+
+  const slaTimeRemaining = deadline
+    ? (() => {
+      const diff = deadline.getTime() - now.getTime();
+      if (diff <= 0) return "BREACHED";
+      const h = Math.floor(diff / 3_600_000);
+      const m = Math.floor((diff % 3_600_000) / 60_000);
+      return h > 0 ? `${h}h ${m}m` : `${m}m`;
+    })()
+    : "N/A";
+
+  const slaDeadlineFormatted = deadline
+    ? deadline.toLocaleString("en-US", {
+      month: "short", day: "numeric",
+      hour: "2-digit", minute: "2-digit",
+    })
+    : "N/A";
+
+  const createdAtFormatted = new Date(complaint.created_at).toLocaleString("en-US", {
+    month: "short", day: "numeric",
+    hour: "2-digit", minute: "2-digit",
+  });
+
+  const similarCases: SimilarCase[] = (complaint.similar_complaints ?? []).map(
+    (s: any) => ({
+      id: s.related_complaint_id,
+      ticketId: `#${s.related_complaint_id.slice(0, 8).toUpperCase()}`,
+      matchPercent: Math.round(s.similarity_score * 100),
+      summary: "Related complaint — click to view",
+    })
+  );
+
+  const agents: Agent[] = [
+    { id: "alex", name: "Alex Rivera" },
+    { id: "sarah", name: "Sarah Chen" },
+    { id: "james", name: "James Wilson" },
+  ];
+
+  const keyIssues = complaint.key_issues
+    ? [{ icon: "error", iconColor: "text-[#ff97b2]", text: complaint.key_issues }]
+    : [];
 
   return (
     <main className="p-6 lg:p-8 max-w-[1600px] mx-auto w-full">
@@ -126,54 +153,54 @@ export default function ComplaintDetailPage({ params }: Props) {
       {/* Two-column grid */}
       <div className="grid grid-cols-12 gap-8">
 
-        {/* ── Left Column (60%) ─────────────────────────────────────────── */}
+        {/* ── Left Column ────────────────────────────────────────────────── */}
         <div className="col-span-12 lg:col-span-7 space-y-8">
           <ComplaintHeader
-            ticketId={c.ticketId}
-            title={c.title}
-            createdAt={c.createdAt}
-            senderName={c.senderName}
-            senderEmail={c.senderEmail}
-            senderInitials={c.senderInitials}
+            ticketId={`#${complaint.id.slice(0, 8).toUpperCase()}`}
+            title={complaint.subject}
+            createdAt={createdAtFormatted}
+            senderName={complaint.email_id.split("@")[0]}
+            senderEmail={complaint.email_id}
+            senderInitials={complaint.email_id.slice(0, 2).toUpperCase()}
           />
 
-          <OriginalMessage message={c.originalMessage} />
+          <OriginalMessage message={complaint.body} />
 
-          <CommunicationThread messages={MOCK_THREAD} />
+          <CommunicationThread messages={[]} />
 
           <AIResponseDraft
-            initialDraft={c.aiDraft}
+            initialDraft={complaint.draft_response ?? ""}
             onRegenerate={handleRegenerate}
             onSend={handleSend}
           />
         </div>
 
-        {/* ── Right Column (40%) ────────────────────────────────────────── */}
+        {/* ── Right Column ───────────────────────────────────────────────── */}
         <div className="col-span-12 lg:col-span-5 space-y-6">
           <AIAnalysisCard
-            category={c.ai.category}
-            severity={c.ai.severity}
-            sentiment={c.ai.sentiment}
-            keyIssues={c.ai.keyIssues}
+            category={complaint.category ?? "general"}
+            severity={complaint.severity ?? "medium"}
+            sentiment={complaint.sentiment ?? "neutral"}
+            keyIssues={keyIssues}
           />
 
           <SLATracker
-            progressPercent={c.sla.progressPercent}
-            timeRemaining={c.sla.timeRemaining}
-            deadline={c.sla.deadline}
+            progressPercent={slaProgress}
+            timeRemaining={slaTimeRemaining}
+            deadline={slaDeadlineFormatted}
           />
 
           <ComplaintSettings
-            currentStatus={c.currentStatus}
-            agents={c.agents}
-            currentAgentId={c.currentAgentId}
-            channel={c.channel}
+            currentStatus={complaint.status ?? "open"}
+            agents={agents}
+            currentAgentId={complaint.assigned_to ?? ""}
+            channel={complaint.channel ?? "email"}
             onStatusChange={handleStatusChange}
             onAgentChange={handleAgentChange}
             onEscalate={handleEscalate}
           />
 
-          <SimilarCases cases={c.similarCases} />
+          <SimilarCases cases={similarCases} />
         </div>
       </div>
     </main>
